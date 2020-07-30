@@ -1,0 +1,67 @@
+.acct-details {
+  display: none;
+}
+.wrap-custom-file {
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  height: 200px;
+  margin: 0 0.5rem 1rem;
+  text-align: center;
+  border-radius: 8px;
+  border: 1px solid #bdbdbd;
+}
+
+.wrap-custom-file input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.wrap-custom-file label {
+  z-index: 1;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #fff;
+  color: #767676;
+  font-size: 56px;
+}
+
+.wrap-custom-file label {
+  margin-bottom: 0;
+}
+
+.wrap-custom-file label span {
+  display: none;
+  -webkit-transition: color 0.4s;
+  transition: color 0.4s;
+}
+
+
+.wrap-custom-file label:hover span {
+  color: #333;
+}
+
+.wrap-custom-file label.file-ok {
+  background-size: cover;
+  background-position: center;
+}
+
+@media screen and (max-width: 767px) {
+  .ml-5 {
+    margin-left: 0 !important;
+  }
+}

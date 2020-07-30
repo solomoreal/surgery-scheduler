@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Patient;
+use App\Entry;
+use App\Surgeon;
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -35,25 +39,40 @@ class HomeController extends Controller
         return view('detail');
     }
 
-    public function postDetail(Request $request){
+    public function schedules(){
+
+        $entries = Entry::latest()->get();
+        return view('schedules',compact('entries'));
+    }
+
+    public function postEntry(Request $request){
+
+        //dd($request->all());
 
         $condition = $request->condition;
         $severity = $request->severity;
         $urgency = $request->urgency;
+        $emergency = $request->emergency;
 
         $patient = new Patient();
         $patient->name = $request->name;
         $patient->condition = $request->condition;
         $patient->severity = $request->severity;
         $patient->urgency = $request->urgency;
-        
-        
+        $patient->emergency = $request->emergency;
+        $now = Carbon::now();
         $patient->save();
-        $priority = ($condition + $severity + $urgency)/10;
+        $priority = $emergency ? 11 : (($severity + $urgency)/10);
+        $entry = new Entry();
+        $entry->patient_id = $patient->id;
+        $entry->score = $priority;
+        $entry->due_date = $now->addDay(1);
+        $entry->save();
+        return redirect(route('schedules'));
+
+
+
         
-        // name
-        //     $table->string('condition')->nullable();
-        //     $table->smallInteger('severity')->nullable();
-        //     $table->smallInteger('urgency')->nullable();
+        
     }
 }

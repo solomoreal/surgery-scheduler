@@ -17,6 +17,7 @@ class CreateEntriesTable extends Migration
             $table->id();
             $table->unsignedBigInteger('patient_id')->nullable();
             $table->unsignedBigInteger('surgeon_id')->nullable();
+            $table->double('score')->default(0)->nullable();
             $table->string('due_date')->nullable();
             $table->tinyInteger('status')->default(0)->nullable();
             $table->timestamps();
