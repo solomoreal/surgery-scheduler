@@ -16,52 +16,30 @@
           </tr>
         </thead>
         <tbody>
+          @if($entries ?? '')
+
+          @php
+          $sn = 0;    
+          @endphp
+          @foreach($entries as $entry)
           <tr>
-            <td>1</td>
-            <td>Jane Doe
+          <td>{{++$sn}}</td>
+            <td>{{$entry->patient->name}}
             </td>
-            <td>Cardio</td>
-            <td><p class="my-0">17th Sept, 2020</p>
-              <p class="my-0">12:01:04</p></td>
-            <td>John Doe</td>
+          <td>{{$entry->patient->condition}}</td>
+          <td><p class="my-0">{{date('d M, Y',strtotime($entry->due_date))}}</p>
+              <p class="my-0">{{date('h:i:s',strtotime($entry->due_date))}}</p></td>
+          <td>{{$entry->surgeon->name ?? ''}}</td>
             <td>
               Details
             </td>
             <td>
-              Pending
+              {{$entry->status()}}
             </td>
           </tr>
-          <tr>
-            <td>2</td>
-            <td>Jane Doe
-            </td>
-            <td>Cardio</td>
-            <td><p class="my-0">17th Sept, 2020</p>
-              <p class="my-0">12:01:04</p></td>
-            <td>John Doe</td>
-            <td>
-              Details
-            </td>
-            <td>
-              Pending
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Hank Doe
-            </td>
-            <td>Cardio</td>
-            <td><p class="my-0">17th Sept, 2020</p>
-              <p class="my-0">12:01:04</p></td>
-            <td>Ken Doe</td>
-            <td>
-              Details
-            </td>
-            <td>
-              Complete
-            </td>
-          </tr>
-          </tr>
+          @endforeach
+          @endif
+          
         </tbody>
       </table>
     </div>
