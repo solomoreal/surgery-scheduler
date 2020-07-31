@@ -40,15 +40,13 @@ class HomeController extends Controller
     }
 
     public function schedules(){
-
+        //$entry = new Entry();
+        //return $entry->checkDueDate(8);
         $entries = Entry::latest()->get();
         return view('schedules',compact('entries'));
     }
 
     public function postEntry(Request $request){
-
-        //dd($request->all());
-
         $condition = $request->condition;
         $severity = $request->severity;
         $urgency = $request->urgency;
@@ -60,19 +58,28 @@ class HomeController extends Controller
         $patient->severity = $request->severity;
         $patient->urgency = $request->urgency;
         $patient->emergency = $request->emergency;
-        $now = Carbon::now();
+        $today = Carbon::today();
         $patient->save();
-        $priority = $emergency ? 11 : (($severity + $urgency)/10);
+        $priority = $emergency ? 11 : (($severity + $urgency)/2);
         $entry = new Entry();
         $entry->patient_id = $patient->id;
         $entry->score = $priority;
-        $entry->due_date = $now->addDay(1);
+        $entry->adjustDueDate($priority);
+
+        $lower_entry  = Entry::where('status',0)->where('score', '<', $priority)->orderBy('due_date', 'desc')->first();
+        $higher_entry  = Entry::where('status',0)->where('score', '>', $priority)->orderBy('due_date', 'asc')->first();
+        if($lower_entry ?? false){
+            $entry->due_date = Carbon::parse($lower_entry->due_date)->subDay(1);
+        }
+        if($higher_entry ?? false){
+            $entry->due_date = Carbon::parse($higher_entry->due_date)->addDay(1);
+        }
+        if($higher_entry == null && $lower_entry == null){
+            $entry->due_date = $today;
+        }
+        
         $entry->save();
         return redirect(route('schedules'));
 
-
-
-        
-        
     }
 }

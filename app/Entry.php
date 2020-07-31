@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Carbon\Carbon;
+use App\Surgeon;
 use Illuminate\Database\Eloquent\Model;
 
 class Entry extends Model
@@ -26,5 +28,26 @@ class Entry extends Model
         if($this->status == 2){
             return 'Cancelled';
         }
+    }
+
+    function adjustDueDate($score){
+        $today = Carbon::today();
+        $lower_entries  = Entry::latest()->where('status',0)->where('score', '<', $score)->whereDate('due_date','<=', $today)->get();
+        $higher_entry  = Entry::where('status',0)->where('score', '>', $score)->whereDate('due_date','<=', $today)->get();
+        foreach($lower_entries as $entry){
+            $entry->due_date = Carbon::parse($entry->due_date)->addDay(1);
+            $entry->update();  
+        }
+
+        // foreach($higher_entry as $hentry){
+
+        // }
+
+        return;
+    }
+
+    public function assignSurgeon($surgeon_type){
+        $surgeon = Surgeon::where('status',0)->where('type', $surgeon_type)->first();
+
     }
 }
