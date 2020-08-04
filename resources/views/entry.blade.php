@@ -2,7 +2,6 @@
 @extends('layouts.dashboard')
 @section('content')
     
-
     <section class="container mt-20">
         <h1 class="my-10">Welcome {{Auth::user()->name}}</h1>
 
