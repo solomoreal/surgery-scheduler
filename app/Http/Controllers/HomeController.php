@@ -60,6 +60,10 @@ class HomeController extends Controller
         $patient->emergency = $request->emergency;
         $today = Carbon::today();
         $patient->save();
+        $surgeon =  assignSurgeon($request->surgeon_type);
+        if($surgeon == false){
+            return back()->with("All $request->surgeon_type Are Booked For The Period ");
+        }
         $priority = $emergency ? 11 : (($severity + $urgency)/2);
         $entry = new Entry();
         $entry->patient_id = $patient->id;
@@ -77,9 +81,13 @@ class HomeController extends Controller
         if($higher_entry == null && $lower_entry == null){
             $entry->due_date = $today;
         }
-        
+        $surgeon =  assignSurgeon($request->surgeon_type,$entry->due_date);
+        if($surgeon == false){
+            return back()->with("All $request->surgeon_type Are Booked For The Period ");
+        }
+        $entry->surgeon_id = $surgeon->id;
         $entry->save();
         return redirect(route('schedules'));
-
+        
     }
 }

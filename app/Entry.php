@@ -46,8 +46,19 @@ class Entry extends Model
         return;
     }
 
-    public function assignSurgeon($surgeon_type){
-        $surgeon = Surgeon::where('status',0)->where('type', $surgeon_type)->first();
+    public function assignSurgeon($surgeon_type, $due_date){
+        $surgeonA = Surgeon::where('status',0)->where('type', $surgeon_type)->first();
+        $surgeonB = Surgeon::where('status',1)->where('type', $surgeon_type)->first();
+        $entry = Entry::where('due_date',$due_date)->first();
+        if($surgeonA){
+            return $surgeonA;
+        }else{
+            if($entry->surgeon_id == $surgeonB->id){
+                return false;
+            }else{
+                return $surgeonB;
+            }
+        }
 
     }
 }
