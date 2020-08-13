@@ -31,7 +31,25 @@
   <!-- ======= Header ======= -->
   <header id="header" class="">
     <div class="container d-flex align-items-center">
-
+      @if(count($errors)>0)
+      @foreach($errors->all() as $error)
+          <div class = "alert alert-danger">
+              {{$error}}
+          </div>    
+      @endforeach
+  @endif
+  
+  @if(session('message'))
+      <div class = "alert alert-success">
+          {{session('message')}}
+      </div>    
+  @endif
+  
+  @if(session('error'))
+      <div class = "alert alert-danger">
+          {{session('error')}}
+      </div>    
+  @endif
     <h1 class="logo mr-auto"><a href="{{route('index')}}">Kings Scheduler<span>.</span></a></h1>
       
       <nav class="nav-menu d-none d-lg-block">

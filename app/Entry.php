@@ -39,24 +39,24 @@ class Entry extends Model
             $entry->update();  
         }
 
-        // foreach($higher_entry as $hentry){
-
-        // }
-
         return;
     }
 
-    public function assignSurgeon($surgeon_type, $due_date){
+    public function assignSurgeon($surgeon_type, $due_date,$score){
         $surgeonA = Surgeon::where('status',0)->where('specialization', $surgeon_type)->first();
         $surgeonB = Surgeon::where('status',1)->where('specialization', $surgeon_type)->first();
-        $entry = Entry::where('due_date',$due_date)->first();
+        $entry = Entry::where('due_date',$due_date)->where('score','>', $score)->first();
         if($surgeonA){
             return $surgeonA;
         }else{
-            if($entry->surgeon_id == $surgeonB->id){
+            if($surgeonB && $entry && $entry->surgeon_id == $surgeonB->id){
+                //dd($surgeonB, $entry,$due_date);
                 return false;
-            }else{
+            }elseif($surgeonB){
+                //dd($surgeonB);
                 return $surgeonB;
+            }else{
+                return false;
             }
         }
     }

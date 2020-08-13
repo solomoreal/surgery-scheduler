@@ -6,11 +6,12 @@
       <table class="table table-hover table-responsive-sm w-100">
         <thead>
           <tr>
-            <th>S/N</th>
+            <th>Processes</th>
+            <th>Arrival Time(Created At)</th>
             <th>Name</th>
             <th>condition</th>
             <th>Waiting time(days)</th>
-            <th>Schedule Date</th>
+            <th>Schedule Date(Service Time)</th>
             <th>Surgeon</th>
             <th>View Detail</th>
             <th>Status</th>
@@ -25,10 +26,11 @@
           @foreach($entries as $entry)
           <tr>
           <td>{{++$sn}}</td>
+          <td>{{$entry->created_at}}</td>
             <td>{{$entry->patient->name}}
             </td>
           <td>{{$entry->patient->condition}}</td>
-          <td>{{$entry->created_at}}</td>
+          <td>{{$entry->waiting_time}}</td>
           <td><p class="my-0">{{date('d M, Y',strtotime($entry->due_date))}}</p>
               <p class="my-0">{{date('h:i:s',strtotime($entry->due_date))}}</p></td>
           <td>{{$entry->surgeon->name ?? ''}}</td>

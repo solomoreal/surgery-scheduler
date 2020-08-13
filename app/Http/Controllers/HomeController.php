@@ -44,7 +44,13 @@ class HomeController extends Controller
     public function schedules(){
         //$entry = new Entry();
         //return $entry->checkDueDate(8);
-        $entries = Entry::latest()->get();
+        $entries = Entry::orderBy('due_date','asc')->get();
+        $entries->transform(function($entry, $key){
+           $entry->due_date = new Carbon($entry->due_date);
+           $entry->waiting_time = $entry->due_date->diffInDays($entry->created_at);
+           
+        return $entry;
+        });
         return view('schedules',compact('entries'));
     }
 
@@ -69,8 +75,8 @@ class HomeController extends Controller
         $entry->score = $priority;
         $entry->adjustDueDate($priority);
 
-        $lower_entry  = Entry::where('status',0)->where('score', '<', $priority)->orderBy('due_date', 'desc')->first();
-        $higher_entry  = Entry::where('status',0)->where('score', '>', $priority)->orderBy('due_date', 'asc')->first();
+        $lower_entry  = Entry::where('status',0)->where('score', '<', $priority)->orderBy('due_date', 'asc')->first();
+        $higher_entry  = Entry::where('status',0)->where('score', '>', $priority)->orderBy('due_date', 'desc')->first();
         if($lower_entry ?? false){
             $entry->due_date = Carbon::parse($lower_entry->due_date)->subDay(1);
         }
@@ -80,9 +86,10 @@ class HomeController extends Controller
         if($higher_entry == null && $lower_entry == null){
             $entry->due_date = $today;
         }
-        $surgeon =  $entry->assignSurgeon($request->surgeon_type,$entry->due_date);
+        $surgeon =  $entry->assignSurgeon($request->surgeon_type,$entry->due_date,$priority);
         if($surgeon == false){
-            return back()->with("All $request->surgeon_type Are Booked For The Period ");
+            //dd($surgeon);
+            return back()->with('error',"All $request->surgeon_type Are Booked For The Period ");
         }
         $entry->surgeon_id = $surgeon->id;
         $surgeon->status = 1;
