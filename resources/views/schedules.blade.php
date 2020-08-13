@@ -9,6 +9,7 @@
             <th>S/N</th>
             <th>Name</th>
             <th>condition</th>
+            <th>Waiting time(days)</th>
             <th>Schedule Date</th>
             <th>Surgeon</th>
             <th>View Detail</th>
@@ -27,11 +28,12 @@
             <td>{{$entry->patient->name}}
             </td>
           <td>{{$entry->patient->condition}}</td>
+          <td>{{$entry->created_at}}</td>
           <td><p class="my-0">{{date('d M, Y',strtotime($entry->due_date))}}</p>
               <p class="my-0">{{date('h:i:s',strtotime($entry->due_date))}}</p></td>
           <td>{{$entry->surgeon->name ?? ''}}</td>
             <td>
-              Details
+            <a href="{{route('detail',['id' => $entry->id])}}" target="_blank" rel="noopener noreferrer">detail</a>
             </td>
             <td>
               {{$entry->status()}}

@@ -8,6 +8,7 @@ use App\Surgeon;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -35,8 +36,9 @@ class HomeController extends Controller
         return view('entry');
     }
 
-    public function detail(){
-        return view('detail');
+    public function detail($id){
+        $entry = Entry::findOrFail($id);
+        return view('detail',compact('entry'));
     }
 
     public function schedules(){
@@ -60,10 +62,7 @@ class HomeController extends Controller
         $patient->emergency = $request->emergency;
         $today = Carbon::today();
         $patient->save();
-        $surgeon =  assignSurgeon($request->surgeon_type);
-        if($surgeon == false){
-            return back()->with("All $request->surgeon_type Are Booked For The Period ");
-        }
+        
         $priority = $emergency ? 11 : (($severity + $urgency)/2);
         $entry = new Entry();
         $entry->patient_id = $patient->id;
@@ -81,13 +80,33 @@ class HomeController extends Controller
         if($higher_entry == null && $lower_entry == null){
             $entry->due_date = $today;
         }
-        $surgeon =  assignSurgeon($request->surgeon_type,$entry->due_date);
+        $surgeon =  $entry->assignSurgeon($request->surgeon_type,$entry->due_date);
         if($surgeon == false){
             return back()->with("All $request->surgeon_type Are Booked For The Period ");
         }
         $entry->surgeon_id = $surgeon->id;
+        $surgeon->status = 1;
+        $surgeon->update();
         $entry->save();
-        return redirect(route('schedules'));
-        
+        return redirect(route('schedules'));        
+    }
+
+    public function addSurgeon(Request $request){
+        $user =  User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 2,
+        ]);
+
+        $surgeon = new Surgeon();
+        $surgeon->name = $request->name;
+        $surgeon->user_id = $user->id;
+        $surgeon->position = $request->position;
+        $surgeon->role = 2;
+        $surgeon->specialization = $request->specialization;
+        $surgeon->status = 0;
+        $surgeon->save();
+        return back();
     }
 }

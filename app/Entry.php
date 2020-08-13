@@ -47,8 +47,8 @@ class Entry extends Model
     }
 
     public function assignSurgeon($surgeon_type, $due_date){
-        $surgeonA = Surgeon::where('status',0)->where('type', $surgeon_type)->first();
-        $surgeonB = Surgeon::where('status',1)->where('type', $surgeon_type)->first();
+        $surgeonA = Surgeon::where('status',0)->where('specialization', $surgeon_type)->first();
+        $surgeonB = Surgeon::where('status',1)->where('specialization', $surgeon_type)->first();
         $entry = Entry::where('due_date',$due_date)->first();
         if($surgeonA){
             return $surgeonA;

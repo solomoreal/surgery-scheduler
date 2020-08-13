@@ -8,48 +8,43 @@
         <section class="my-5 py-5">
           <div class="container">
             <div class="row justify-content-center">
+              <h3>Add Surgeon</h3>
               <div class="col-md-12">
-                <form action="" class="w-md-80 mx-auto text-center" id="form">
-                  <div class="wrap-custom-file rounded-circle">
-                    <input type="file" name="cover-image" id="cover-image" accept=".gif, .jpg, .png" />
-                    <label for="cover-image" class="rounded-circle">
-                      <i class="fa fa-user-plus" aria-hidden="true"></i>
-                      <span></span>
-                    </label>
-                  </div>
-      
+              <form action="{{route('addSurgeon')}}" method="POST" class="w-md-80 mx-auto text-center" id="form">
+                  
+                @csrf
                   <div class="row text-left">
                     <div class="col-md-5 mt-4 mx-auto">
-                      <label for="email" class="text-capitalize">What is your email address</label>
+                      <label for="email" class="text-capitalize">email</label>
                       <input type="email" name="email" class="form-control" id="email">
                     </div>
                     <div class="col-md-5 mt-4 mx-auto">
-                      <label for="nickname" class="text-capitalize">What should we call you</label>
-                      <input type="text" name="nickname" class="form-control" id="nickname">
+                      <label for="nickname" class="text-capitalize">name</label>
+                      <input type="text" name="name" class="form-control" id="nickname">
                     </div>
                   </div>
                   <div class="row text-left">
                     <div class="col-md-5 mt-4 mx-auto">
-                      <label for="firstname" class="text-capitalize">First Name</label>
-                      <input type="text" name="firstname" class="form-control" id="firstname">
+                      <label for="firstname" class="text-capitalize">Position</label>
+                      <input type="text" name="position" class="form-control" id="firstname">
                     </div>
                     <div class="col-md-5 mt-4 mx-auto">
-                      <label for="lastname" class="text-capitalize">Last Name</label>
-                      <input type="text" name="lastname" class="form-control" id="lastname">
+                      <label for="lastname" class="text-capitalize">specialization</label>
+                      <input type="text" name="specialization" class="form-control" id="lastname">
                     </div>
                   </div>
                   <div class="row text-left">
                     <div class="col-md-5 mt-4 mx-auto">
-                      <label for="oldpass" class="text-capitalize">Old Password</label>
-                      <input type="password" name="oldpass" class="form-control" id="oldpass">
+                      <label for="oldpass" class="text-capitalize">password</label>
+                      <input type="password" name="password" class="form-control" id="oldpass">
                     </div>
                     <div class="col-md-5 mt-4 mx-auto">
-                      <label for="newpass" class="text-capitalize">New Password</label>
-                      <input type="password" name="newpass" class="form-control" id="newpass">
+                      <label for="newpass" class="text-capitalize">comfirm Password</label>
+                      <input type="password" name="comfirm_password" class="form-control" id="newpass">
                     </div>
                   </div>
                   <button class="btn btn-primary shadow text-uppercase mt-5" type="submit">
-                    Update
+                    Add
                   </button>
                 </form>
               </div>

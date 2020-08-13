@@ -21,6 +21,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('entry','HomeController@entry')->name('entry');
-Route::get('detail','HomeController@detail')->name('detail');
+Route::get('detail/{id}','HomeController@detail')->name('detail');
 Route::get('shedule','HomeController@schedules')->name('schedules');
 Route::post('post_entry','HomeController@postEntry')->name('postEntry');
+Route::post('add_surgeon','HomeController@addSurgeon')->name('addSurgeon');

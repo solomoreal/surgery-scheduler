@@ -20,6 +20,7 @@ class CreateSurgeonsTable extends Migration
             $table->string('position')->nullable();
             $table->string('role')->nullable();
             $table->string('specialization')->nullable();
+            $table->tinyInteger('status')->default(0)->nullable();
             $table->timestamps();
         });
     }
