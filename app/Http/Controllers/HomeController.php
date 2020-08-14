@@ -12,46 +12,47 @@ use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index()
     {
         return view('home');
     }
 
     public function entry(){
-        return view('entry');
+        $surgeons = Surgeon::latest()->get()->unique('specialization');
+        return view('entry',compact('surgeons'));
     }
 
     public function detail($id){
         $entry = Entry::findOrFail($id);
+        $entry->due_date = new Carbon($entry->due_date);
+        $entry->waiting_time = $entry->due_date->diffInDays($entry->created_at);
         return view('detail',compact('entry'));
     }
 
     public function schedules(){
-        //$entry = new Entry();
-        //return $entry->checkDueDate(8);
+        $entries = Entry::where('status',0)->orderBy('due_date','asc')->get();
+        $entries->transform(function($entry, $key){
+           $entry->due_date = new Carbon($entry->due_date);
+           $entry->waiting_time = $entry->due_date->diffInDays($entry->created_at); 
+        return $entry;
+        });
+        return view('schedules',compact('entries'));
+    }
+
+    public function allSchedules(){
         $entries = Entry::orderBy('due_date','asc')->get();
         $entries->transform(function($entry, $key){
            $entry->due_date = new Carbon($entry->due_date);
            $entry->waiting_time = $entry->due_date->diffInDays($entry->created_at);
-           
-        return $entry;
+           return $entry;
         });
-        return view('schedules',compact('entries'));
+        return view('all_schedule',compact('entries'));
     }
 
     public function postEntry(Request $request){
@@ -73,6 +74,7 @@ class HomeController extends Controller
         $entry = new Entry();
         $entry->patient_id = $patient->id;
         $entry->score = $priority;
+        $entry->examiner_id = auth()->user()->id;
         $entry->adjustDueDate($priority);
 
         $lower_entry  = Entry::where('status',0)->where('score', '<', $priority)->orderBy('due_date', 'asc')->first();
@@ -115,5 +117,19 @@ class HomeController extends Controller
         $surgeon->status = 0;
         $surgeon->save();
         return back();
+    }
+
+    public function complete($id){
+        $entry = Entry::findOrFail($id);
+        $entry->status = 1;
+        $entry->update();
+        return back()->with('message','The Process Is Now Marked Completed');
+    }
+
+    public function cancel($id){
+        $entry = Entry::findOrFail($id);
+        $entry->status = 2;
+        $entry->update();
+        return back()->with('message','The Process Is Now Marked Cancelled');
     }
 }

@@ -23,5 +23,8 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('entry','HomeController@entry')->name('entry');
 Route::get('detail/{id}','HomeController@detail')->name('detail');
 Route::get('shedule','HomeController@schedules')->name('schedules');
+Route::get('all_shedule','HomeController@allSchedules')->name('allSchedules');
 Route::post('post_entry','HomeController@postEntry')->name('postEntry');
 Route::post('add_surgeon','HomeController@addSurgeon')->name('addSurgeon');
+Route::get('complet//{id}','HomeController@complete')->name('complete');
+Route::get('cancel//{id}','HomeController@cancel')->name('cancel');

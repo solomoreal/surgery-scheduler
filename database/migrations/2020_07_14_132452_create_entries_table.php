@@ -16,6 +16,7 @@ class CreateEntriesTable extends Migration
         Schema::create('entries', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('patient_id')->nullable();
+            $table->unsignedBigInteger('examiner_id')->nullable();
             $table->unsignedBigInteger('surgeon_id')->nullable();
             $table->double('score')->default(0)->nullable();
             $table->string('due_date')->nullable();

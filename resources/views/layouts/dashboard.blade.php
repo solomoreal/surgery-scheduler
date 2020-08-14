@@ -31,35 +31,38 @@
   <!-- ======= Header ======= -->
   <header id="header" class="">
     <div class="container d-flex align-items-center">
-      @if(count($errors)>0)
-      @foreach($errors->all() as $error)
-          <div class = "alert alert-danger">
-              {{$error}}
-          </div>    
-      @endforeach
-  @endif
-  
-  @if(session('message'))
-      <div class = "alert alert-success">
-          {{session('message')}}
-      </div>    
-  @endif
-  
-  @if(session('error'))
-      <div class = "alert alert-danger">
-          {{session('error')}}
-      </div>    
-  @endif
-    <h1 class="logo mr-auto"><a href="{{route('index')}}">Kings Scheduler<span>.</span></a></h1>
       
+    <h1 class="logo mr-auto"><a href="{{route('index')}}">Kings Scheduler<span>.</span></a></h1>
+    @if(count($errors)>0)
+    @foreach($errors->all() as $error)
+        <div class = "alert alert-danger">
+            {{$error}}
+        </div>    
+    @endforeach
+@endif
+
+@if(session('message'))
+    <div class = "alert alert-success">
+        {{session('message')}}
+    </div>    
+@endif
+
+@if(session('error'))
+    <div class = "alert alert-danger">
+        {{session('error')}}
+    </div>    
+@endif
       <nav class="nav-menu d-none d-lg-block">
         <ul>
           <li class="active"><a href="{{route('home')}}">Home</a></li>
         @guest
             <li><a href="{{route('login')}}">Login</a></li> 
         @endguest
+        @if(Auth::user()->role == 1)
         <li><a href="{{route('entry')}}">New Entry</a></li>
-        <li><a href="{{route('schedules')}}">Schedules</a></li>
+        @endif
+        <li><a href="{{route('schedules')}}">Pending Schedules</a></li>
+        <li><a href="{{route('allSchedules')}}">All Schedules</a></li>
         <li><a href="{{ route('logout') }}"
           onclick="event.preventDefault();
                         document.getElementById('logout-form').submit();">

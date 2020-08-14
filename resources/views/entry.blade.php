@@ -33,7 +33,16 @@
                     <div class="col-md-5 mt-4 mx-auto">
                         <label for="firstname" class="text-capitalize">what type of surgeon is best suited for the condition?</label>
                         <small class="text-capitalize text-success">this will be used to assign the patient to the proper surgeon</small>
-                        <input type="text" name="surgeon_type" placeholder="surgeon type" required class="form-control" id="firstname">
+                        <select type="text" name="surgeon_type" placeholder="surgeon type" required class="form-control" id="firstname">
+                        @if(count($surgeons) > 0)
+                        <option value="" selected disabled>Select Surgeon</option>
+                        @foreach($surgeons as $surgeon)
+                      
+                        <option value="{{$surgeon->specialization}}">{{$surgeon->specialization}}</option>
+                        
+                        @endforeach
+                        @endif
+                        </select>
                       </div>
                     
                   </div>
