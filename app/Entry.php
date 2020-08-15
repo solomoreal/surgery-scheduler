@@ -53,10 +53,9 @@ class Entry extends Model
             return $surgeonA;
         }else{
             if($surgeonB && $entry && $entry->surgeon_id == $surgeonB->id){
-                //dd($surgeonB, $entry,$due_date);
+
                 return false;
             }elseif($surgeonB){
-                //dd($surgeonB);
                 return $surgeonB;
             }else{
                 return false;
