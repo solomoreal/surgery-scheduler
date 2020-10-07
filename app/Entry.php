@@ -4,6 +4,7 @@ namespace App;
 
 use Carbon\Carbon;
 use App\Surgeon;
+use App\Process;
 use Illuminate\Database\Eloquent\Model;
 
 class Entry extends Model
@@ -31,6 +32,24 @@ class Entry extends Model
         if($this->status == 2){
             return 'Cancelled';
         }
+    }
+
+    public function getPoissonRandom($mean) {
+        $L = (float)exp(-$mean);
+        //dd($L);
+         $k = 0;
+         $p = 1.0;
+        do {
+            $p = $p * rand(1,200);
+            $k++;
+            $process = new Process();
+            $process->arrival_time = $k - 1;
+            $process->burst_time = rand(1,5);
+            $process->save();
+        } while ($k < 50);
+        
+        
+        return $k - 1;
     }
 
     function adjustDueDate($score){

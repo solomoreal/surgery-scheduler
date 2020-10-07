@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Patient;
 use App\Entry;
+use App\Process;
 use App\Surgeon;
 use App\User;
 use Carbon\Carbon;
@@ -20,7 +21,24 @@ class HomeController extends Controller
 
     public function index()
     {
+        $entry = new Entry();
+        $mean = 0.000034;
+        //$randi = $entry->getPoissonRandom($mean);
+        //dd($randi);
         return view('home');
+    }
+
+    public function generateInput(){
+        
+        //dd($randi);
+        $processes = Process::latest()->get();
+        if(count($processes) < 200){
+            $entry = new Entry();
+            $mean = 0.000034;
+            $randi = $entry->getPoissonRandom($mean);
+        }
+        $processes = Process::orderBy('id', 'asc')->take(50)->get();
+        return view('process_data',compact('processes'));
     }
 
     public function entry(){
@@ -132,4 +150,8 @@ class HomeController extends Controller
         $entry->update();
         return back()->with('message','The Process Is Now Marked Cancelled');
     }
+
+   public function getrandom(){
+    //
+   }
 }

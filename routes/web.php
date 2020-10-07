@@ -20,6 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/generateInput','HomeController@generateInput')->name('generateInput');
 Route::get('entry','HomeController@entry')->name('entry');
 Route::get('detail/{id}','HomeController@detail')->name('detail');
 Route::get('shedule','HomeController@schedules')->name('schedules');
