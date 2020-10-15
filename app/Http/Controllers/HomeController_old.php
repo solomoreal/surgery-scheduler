@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Patient;
 use App\Entry;
-use App\Priority;
 use App\Process;
 use App\Surgeon;
 use App\User;
@@ -39,45 +38,6 @@ class HomeController extends Controller
         return view('process_data',compact('processes'));
     }
 
-    public function schedules(){
-
-        $processes = Process::orderBy('id', 'asc')->take(50)->get();
-        
-        //$last_completion_time = count($prios) > 0 ? $prios->first()->completion_time : 0;
-        $prioss = Priority::orderBy('id','desc')->get();
-        if(count($prioss) < 1){
-            foreach($processes as $process){
-                $prios = Priority::orderBy('id','desc')->get();
-                $last_completion_time = count($prios) > 0 ? $prios->first()->completion_time : 0;
-                $priority = new Priority();
-                $priority->arrival_time = $process->arrival_time;
-                $priority->burst_time = $process->burst_time;
-                $priority->completion_time = $priority->burst_time + $last_completion_time;
-                $priority->turnaround_time = $priority->completion_time - $priority->arrival_time;
-                $priority->waiting_time = $priority->turnaround_time - $priority->burst_time;
-                $priority->save(); 
-            }
-        }
-        
-        $entries = Priority::orderBy('id','asc')->take(50)->get();
-        $total_waiting_time = Priority::orderBy('id','asc')->take(50)->sum('waiting_time');
-        $average_waiting_time = $total_waiting_time/count($entries);
-        $total_turnaround_time = Priority::orderBy('id','asc')->take(50)->sum('turnaround_time');
-        $average_turnaround_time = $total_turnaround_time/count($entries);
-        //dd($average_waiting_time);
-        return view('priority',compact('entries','average_waiting_time','average_turnaround_time'));
-    }
-
-    public function allSchedules(){
-        $entries = Entry::orderBy('due_date','asc')->get();
-        $entries->transform(function($entry, $key){
-           $entry->due_date = new Carbon($entry->due_date);
-           $entry->waiting_time = $entry->due_date->diffInDays($entry->created_at);
-           return $entry;
-        });
-        return view('all_schedule',compact('entries'));
-    }
-
     public function entry(){
         $surgeons = Surgeon::latest()->get()->unique('specialization');
         return view('entry',compact('surgeons'));
@@ -88,6 +48,26 @@ class HomeController extends Controller
         $entry->due_date = new Carbon($entry->due_date);
         $entry->waiting_time = $entry->due_date->diffInDays($entry->created_at);
         return view('detail',compact('entry'));
+    }
+
+    public function schedules(){
+        $entries = Entry::where('status',0)->orderBy('due_date','asc')->get();
+        $entries->transform(function($entry, $key){
+           $entry->due_date = new Carbon($entry->due_date);
+           $entry->waiting_time = $entry->due_date->diffInDays($entry->created_at); 
+        return $entry;
+        });
+        return view('schedules',compact('entries'));
+    }
+
+    public function allSchedules(){
+        $entries = Entry::orderBy('due_date','asc')->get();
+        $entries->transform(function($entry, $key){
+           $entry->due_date = new Carbon($entry->due_date);
+           $entry->waiting_time = $entry->due_date->diffInDays($entry->created_at);
+           return $entry;
+        });
+        return view('all_schedule',compact('entries'));
     }
 
     public function postEntry(Request $request){
